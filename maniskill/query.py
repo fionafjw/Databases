@@ -4,12 +4,14 @@ import sqlite3
 OUTPUT_FILE = "query_results.txt"
 
 def save_query_results():
-    """Query the database and save results into a text file."""
+    """
+    Query database and save results into text file.
+    """
     conn = sqlite3.connect("maniskill.db")
     cursor = conn.cursor()
 
     with open(OUTPUT_FILE, "w") as f:
-        # Fetch all unique environment IDs
+        # Get all unique environment IDs
         cursor.execute("SELECT DISTINCT env_id FROM task_info")
         env_ids = cursor.fetchall()
 
@@ -29,7 +31,7 @@ def save_query_results():
             f.write(f"   - Source Type: {source_type}\n")
             f.write(f"   - Source Description: {source_desc}\n\n")
 
-        # Query each environment's episodes table and store results
+        # Query each environment's episodes table and store 10 results
         for row in env_ids:
             env_id = row[0].replace("-", "_")  # Match table naming format
             f.write(f"\n=== Episodes for `{env_id}` (Showing up to 10) ===\n")
@@ -44,7 +46,7 @@ def save_query_results():
                 f.write(f"Error: Table episodes_{env_id} not found.\n")
                 continue
 
-            # Fetch and store up to 10 episodes
+            # Store up to 10 episodes
             query = f"SELECT * FROM episodes_{env_id} LIMIT 10"
             try:
                 cursor.execute(query)
@@ -61,5 +63,5 @@ def save_query_results():
     conn.close()
     print(f"Query results saved to {OUTPUT_FILE}")
 
-# Run the query and save results
+# Run query and save
 save_query_results()
